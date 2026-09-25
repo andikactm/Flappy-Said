@@ -38,24 +38,34 @@ Foto ditampilkan sebagai Phaser Arcade Image dengan lebar 82 px, skala seragam, 
 
 Game memakai dunia tetap 432 × 768 dan Phaser Scale.FIT. Area di halaman maksimal 430 px. React hanya menerima perubahan status/skor; update tiap frame ada di Phaser. Obstacle dan physics body dihancurkan setelah keluar layar; restart membersihkan scene dan timer. Tabrakan menghentikan physics serta parallax selama 400 ms sebelum overlay muncul.
 
-## Build dan deploy ke Vercel
+## Build statis dan GitHub Pages
 
 ```sh
-npm run typecheck
-npm run lint
+npm ci
 npm run build
-npm start
 ```
 
-Push proyek ke repository Git, lalu import repository tersebut di Vercel. Pilih preset **Next.js**; gunakan build command `npm run build` dan output directory default. Tidak perlu environment variable atau konfigurasi server tambahan.
+Hasil export ada di `out/`; gunakan static HTTP server untuk preview. `npm start` / `next start` tidak mendukung `output: "export"`. Development tetap memakai `npm run dev` di http://localhost:3000/ tanpa prefix.
 
-## Deploy ke Netlify
+Workflow `.github/workflows/deploy.yml` berjalan saat push ke `main` atau lewat **Actions > Deploy to GitHub Pages > Run workflow**. Workflow memakai Node.js 24, menjalankan `npm ci` dan `npm run build`, lalu mengunggah `out/` menggunakan official GitHub Pages Actions.
 
-Import repository `andikactm/Flappy-Said` dan pilih branch `main`. Biarkan base directory kosong (root proyek). File `netlify.toml` mengatur build command `npm run build`, publish directory `.next`, dan Node.js 22. Netlify mendeteksi Next.js dan memasang adapter secara otomatis. Tidak perlu mengisi environment variable aplikasi.
+Di repository `andikactm/Flappy-Said`, buka **Settings > Pages > Build and deployment > Source**, lalu pilih **GitHub Actions**. Setelah workflow sukses, website tersedia di https://andikactm.github.io/Flappy-Said/.
 
-Jika repository tidak muncul saat import, periksa akses aplikasi Netlify di GitHub dan pastikan repository ini diizinkan. Jika build gagal, buka deploy log untuk melihat pesan error; kegagalan koneksi GitHub tidak dapat diperbaiki melalui konfigurasi build.
+`next.config.ts` mengaktifkan `/Flappy-Said` hanya pada production build dengan `GITHUB_ACTIONS=true` (disediakan otomatis oleh GitHub). `basePath`, `assetPrefix`, dan path foto Phaser memakai prefix yang sama. Tidak perlu `.env`, secret, atau environment variable manual. `trailingSlash: true` menghasilkan halaman `index.html` agar URL halaman bisa dibuka langsung dan di-refresh pada static hosting.
 
-Referensi: [Next.js on Netlify](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/).
+Untuk mereproduksi build Pages di PowerShell:
+
+```powershell
+$env:GITHUB_ACTIONS = 'true'
+npm run build
+Remove-Item Env:GITHUB_ACTIONS
+```
+
+Audit: satu halaman game, tanpa API routes, Server Actions, middleware, SSR dinamis, ISR, atau image optimizer. Phaser dimuat hanya di browser, best score disimpan di localStorage, font dibundel dari `@fontsource`, audio dinonaktifkan, dan satu asset publik adalah `player.png`. Tekstur lainnya dibuat oleh Phaser. Folder `legacy/` adalah arsip dan tidak ikut export. Checkout ini belum memiliki skin selector.
+
+Untuk Netlify, konfigurasi yang tersimpan juga memublikasikan `out/` sebagai static site tanpa prefix GitHub Pages.
+
+Referensi: [Next.js static export](https://nextjs.org/docs/app/guides/static-exports), [GitHub Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
 Tuning gameplay ada di `game/constants.ts`: gravity 1000, flap -370, kecepatan pipa 180, gap 210, spawn 1600 ms. Posisi gap acak dibatasi agar perbedaan tinggi antarpipa tetap terjangkau.
 

@@ -41,7 +41,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    if (!this.textures.exists("player")) this.load.image("player", "/player.png");
+    if (!this.textures.exists("player")) this.load.image("player", `${process.env.NEXT_PUBLIC_BASE_PATH}/player.png`);
   }
 
   create() {
