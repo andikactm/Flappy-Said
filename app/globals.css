@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; overscroll-behavior: none; }
+body {
+  background-color: #152824;
+  background-image: radial-gradient(#3a554c 1px, transparent 1px);
+  background-size: 20px 20px;
+  color: #f5f6df;
+  font-family: "Press Start 2P", "Courier New", monospace;
+}
+button { font: inherit; cursor: pointer; touch-action: manipulation; }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+.game-shell { width: min(430px, calc(100vw - 32px), calc((100svh - 112px) * 9 / 16)); }
+.game-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: #88deec;
+  box-shadow: 0 0 0 4px #071913, 0 0 0 7px #476347, 0 12px 0 4px #071913, 0 24px 60px #0004;
+  container-type: inline-size;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.phaser-host { position: absolute; inset: 0; }
+.phaser-host canvas { display: block; touch-action: none; }
+.arcade-title { color: #fff4c7; -webkit-text-stroke: 5px #244d39; paint-order: stroke fill; text-shadow: 0 6px 0 #244d39; }
+.score-text { color: #fff; -webkit-text-stroke: 5px #203d31; paint-order: stroke fill; text-shadow: 3px 5px 0 #203d31; font-variant-numeric: tabular-nums; }
+.arcade-button { border: 3px solid #284b31; background: #ffd46d; color: #284b31; box-shadow: 0 5px 0 #284b31; transition: background-color .12s; }
+.arcade-button:hover { background: #ffe59f; }
+.arcade-button:active { transform: translateY(3px); box-shadow: 0 2px 0 #284b31; }
+.game-copy { font-family: ui-monospace, "Courier New", monospace; }
+@media (max-height: 520px) { .game-shell { width: min(430px, calc(100vw - 32px), calc((100svh - 88px) * 9 / 16)); } }
